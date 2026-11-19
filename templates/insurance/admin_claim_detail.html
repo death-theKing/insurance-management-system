@@ -1,0 +1,32 @@
+{% extends 'insurance/_base.html' %}
+{% load humanize app_extras %}
+{% block page_title %}Claim #{{ claim.id }}{% endblock %}
+{% block content %}
+<p><a href="{% url 'admin-claims' %}">&larr; Back to claims</a></p>
+<div class="card__header">
+  <h1 class="mb-0">Claim #{{ claim.id }}</h1>
+  <span class="badge {{ claim.status|badge_class }}">{{ claim.status }}</span>
+</div>
+<div class="grid grid--2">
+  <div class="card">
+    <h2>Details</h2>
+    <dl class="definition">
+      <dt>Customer</dt><dd>{{ claim.customer.get_name }} ({{ claim.customer.user.email }})</dd>
+      <dt>Policy</dt><dd>{{ claim.policy_record.policy.policy_name }}</dd>
+      <dt>Sum assured</dt><dd>{{ claim.policy_record.policy.sum_assurance|intcomma }}</dd>
+      <dt>Claim amount</dt><dd>{{ claim.claim_amount|intcomma }}</dd>
+      <dt>Filed on</dt><dd>{{ claim.created_at|date:"F j, Y" }}</dd>
+    </dl>
+    <p><strong>Description</strong><br>{{ claim.description|linebreaksbr }}</p>
+  </div>
+
+  <div class="card">
+    <h2>Review</h2>
+    <form method="post" class="form">
+      {% csrf_token %}
+      {% include 'partials/_form.html' with form=form %}
+      <button class="btn btn--primary" type="submit">Save decision</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

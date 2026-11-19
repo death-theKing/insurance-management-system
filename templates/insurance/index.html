@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Insurance Management System{% endblock %}
+{% block content %}
+<section class="hero">
+  <h1>Insurance Management System</h1>
+  <p>Browse policies, get a rule-based recommendation, apply online, and track claims &amp; renewals in one place.</p>
+  <div class="btn-row" style="justify-content:center;margin-top:1rem">
+    <a class="btn btn--primary" href="{% url 'customersignup' %}">Create a customer account</a>
+    <a class="btn" href="{% url 'customerlogin' %}">Log in</a>
+    <a class="btn" href="{% url 'premium-calculator' %}">Try the premium calculator</a>
+  </div>
+</section>
+
+<div class="grid grid--3">
+  <div class="card"><div class="card__title">Transparent recommendations</div><p class="text-muted mb-0">A rule-based engine scores policies against your age, income, dependents and desired coverage &mdash; and shows its reasons.</p></div>
+  <div class="card"><div class="card__title">Applications &amp; claims</div><p class="text-muted mb-0">Apply for a policy, follow its status, submit claims and see admin decisions.</p></div>
+  <div class="card"><div class="card__title">Renewals</div><p class="text-muted mb-0">Approved policies get start/end dates and renewal reminders before they expire.</p></div>
+</div>
+{% endblock %}

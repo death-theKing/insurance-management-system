@@ -1,0 +1,41 @@
+{% extends 'insurance/_base.html' %}
+{% block page_title %}Categories{% endblock %}
+{% block content %}
+<div class="card__header"><h1 class="mb-0">Categories</h1>
+  <a class="btn btn--primary" href="{% url 'admin-add-category' %}">Add category</a></div>
+
+<div class="card">
+  <form method="get" class="form-inline">
+    <div class="field"><label>Search</label><input type="search" name="q" value="{{ q }}" placeholder="Category name"></div>
+    <button class="btn btn--primary" type="submit">Search</button>
+    {% if q %}<a class="btn btn--ghost" href="{% url 'admin-view-category' %}">Clear</a>{% endif %}
+  </form>
+</div>
+
+{% if page_obj.object_list %}
+<div class="table-wrap">
+  <table class="data">
+    <thead><tr><th>Name</th><th>Policies</th><th>Created</th><th></th></tr></thead>
+    <tbody>
+      {% for c in page_obj %}
+      <tr>
+        <td>{{ c.category_name }}</td>
+        <td>{{ c.policy_count }}</td>
+        <td>{{ c.created_at|date:"M j, Y" }}</td>
+        <td class="btn-row">
+          <a class="btn btn--sm" href="{% url 'update-category' c.pk %}">Edit</a>
+          <form method="post" action="{% url 'delete-category' c.pk %}"
+                data-confirm="Delete category '{{ c.category_name }}'? Its policies will also be deleted.">
+            {% csrf_token %}<button class="btn btn--sm btn--danger" type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% include 'partials/_pagination.html' %}
+{% else %}
+<div class="card"><div class="empty"><div class="empty__icon">🏷️</div><p>No categories yet.</p></div></div>
+{% endif %}
+{% endblock %}

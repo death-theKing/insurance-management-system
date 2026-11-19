@@ -1,0 +1,17 @@
+{% extends 'insurance/_base.html' %}
+{% block page_title %}Reply to question{% endblock %}
+{% block content %}
+<h1>Reply to question</h1>
+<div class="card" style="max-width:620px">
+  <p class="text-muted">From {{ question.customer.get_name }} on {{ question.created_at|date:"F j, Y" }}</p>
+  <p><strong>Q:</strong> {{ question.description }}</p>
+  <form method="post" class="form">
+    {% csrf_token %}
+    {% include 'partials/_form.html' with form=questionForm %}
+    <div class="btn-row">
+      <button class="btn btn--primary" type="submit">Send reply</button>
+      <a class="btn" href="{% url 'admin-question' %}">Back</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

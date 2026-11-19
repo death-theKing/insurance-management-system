@@ -1,0 +1,48 @@
+{% extends 'insurance/_base.html' %}
+{% load humanize app_extras %}
+{% block page_title %}Dashboard{% endblock %}
+{% block content %}
+<h1>Overview</h1>
+
+<div class="stat-grid">
+  <div class="stat"><div class="stat__label">Customers</div><div class="stat__value"><a href="{% url 'admin-view-customer' %}">{{ total_user }}</a></div></div>
+  <div class="stat"><div class="stat__label">Policies</div><div class="stat__value"><a href="{% url 'admin-view-policy' %}">{{ total_policy }}</a></div></div>
+  <div class="stat"><div class="stat__label">Categories</div><div class="stat__value"><a href="{% url 'admin-view-category' %}">{{ total_category }}</a></div></div>
+  <div class="stat"><div class="stat__label">Applications</div><div class="stat__value"><a href="{% url 'admin-view-policy-holder' %}">{{ total_policy_holder }}</a></div></div>
+  <div class="stat"><div class="stat__label">Pending applications</div><div class="stat__value">{{ waiting_policy_holder }}</div></div>
+  <div class="stat"><div class="stat__label">Approved applications</div><div class="stat__value">{{ approved_policy_holder }}</div></div>
+  <div class="stat"><div class="stat__label">Claims</div><div class="stat__value"><a href="{% url 'admin-claims' %}">{{ total_claims }}</a></div></div>
+  <div class="stat"><div class="stat__label">Pending claims</div><div class="stat__value">{{ pending_claims }}</div></div>
+  <div class="stat"><div class="stat__label">Unanswered questions</div><div class="stat__value"><a href="{% url 'admin-question' %}?answered=0">{{ unanswered_question }}</a></div></div>
+  <div class="stat"><div class="stat__label">Total sum assured</div><div class="stat__value">{{ assured_sum|intcomma }}</div></div>
+</div>
+
+<div class="grid grid--2">
+  <div class="card">
+    <div class="card__header"><span class="card__title">Recent applications</span><a class="btn btn--sm" href="{% url 'admin-view-policy-holder' %}">All</a></div>
+    {% if recent_records %}
+    <div class="table-wrap"><table class="data">
+      <thead><tr><th>Customer</th><th>Policy</th><th>Status</th></tr></thead>
+      <tbody>{% for r in recent_records %}
+        <tr><td>{{ r.customer.get_name }}</td><td>{{ r.policy.policy_name }}</td>
+          <td><span class="badge {{ r.status|badge_class }}">{{ r.status }}</span></td></tr>
+      {% endfor %}</tbody>
+    </table></div>
+    {% else %}<div class="empty">No applications yet.</div>{% endif %}
+  </div>
+
+  <div class="card">
+    <div class="card__header"><span class="card__title">Recent claims</span><a class="btn btn--sm" href="{% url 'admin-claims' %}">All</a></div>
+    {% if recent_claims %}
+    <div class="table-wrap"><table class="data">
+      <thead><tr><th>#</th><th>Customer</th><th>Amount</th><th>Status</th></tr></thead>
+      <tbody>{% for c in recent_claims %}
+        <tr><td><a href="{% url 'admin-claim-detail' c.pk %}">{{ c.id }}</a></td><td>{{ c.customer.get_name }}</td>
+          <td>{{ c.claim_amount|intcomma }}</td>
+          <td><span class="badge {{ c.status|badge_class }}">{{ c.status }}</span></td></tr>
+      {% endfor %}</tbody>
+    </table></div>
+    {% else %}<div class="empty">No claims yet.</div>{% endif %}
+  </div>
+</div>
+{% endblock %}

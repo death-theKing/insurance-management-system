@@ -1,0 +1,38 @@
+{% extends 'insurance/_base.html' %}
+{% block page_title %}Questions{% endblock %}
+{% block content %}
+<h1>Customer questions</h1>
+
+<div class="card">
+  <form method="get" class="form-inline">
+    <div class="field"><label>Search</label><input type="search" name="q" value="{{ q }}" placeholder="Text or customer"></div>
+    <div class="field"><label>State</label>
+      <select name="answered">
+        <option value="">All</option>
+        <option value="0" {% if answered == '0' %}selected{% endif %}>Unanswered</option>
+        <option value="1" {% if answered == '1' %}selected{% endif %}>Answered</option>
+      </select>
+    </div>
+    <button class="btn btn--primary" type="submit">Filter</button>
+  </form>
+</div>
+
+{% if page_obj.object_list %}
+  {% for q in page_obj %}
+  <div class="card">
+    <div class="card__header">
+      <span class="card__title">{{ q.customer.get_name }}
+        <span class="text-muted">&middot; {{ q.created_at|date:"M j, Y" }}</span></span>
+      <span class="badge {% if q.is_answered %}badge--approved{% else %}badge--pending{% endif %}">
+        {% if q.is_answered %}Answered{% else %}Unanswered{% endif %}</span>
+    </div>
+    <p><strong>Q:</strong> {{ q.description }}</p>
+    {% if q.admin_comment %}<p><strong>A:</strong> {{ q.admin_comment }}</p>{% endif %}
+    <a class="btn btn--sm btn--primary" href="{% url 'update-question' q.pk %}">{% if q.is_answered %}Edit reply{% else %}Reply{% endif %}</a>
+  </div>
+  {% endfor %}
+  {% include 'partials/_pagination.html' %}
+{% else %}
+<div class="card"><div class="empty"><div class="empty__icon">💬</div><p>No questions found.</p></div></div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'insurance/_base.html' %}
+{% block page_title %}Customers{% endblock %}
+{% block content %}
+<h1>Customers</h1>
+
+<div class="card">
+  <form method="get" class="form-inline">
+    <div class="field"><label>Search</label>
+      <input type="search" name="q" value="{{ q }}" placeholder="Name, username, email or mobile"></div>
+    <button class="btn btn--primary" type="submit">Search</button>
+    {% if q %}<a class="btn btn--ghost" href="{% url 'admin-view-customer' %}">Clear</a>{% endif %}
+  </form>
+</div>
+
+{% if page_obj.object_list %}
+<div class="table-wrap">
+  <table class="data">
+    <thead><tr><th>Name</th><th>Username</th><th>Email</th><th>Mobile</th><th>Applications</th><th>Joined</th><th></th></tr></thead>
+    <tbody>
+      {% for c in page_obj %}
+      <tr>
+        <td>{{ c.get_name }}</td>
+        <td>{{ c.user.username }}</td>
+        <td>{{ c.user.email }}</td>
+        <td>{{ c.mobile }}</td>
+        <td>{{ c.record_count }}</td>
+        <td>{{ c.created_at|date:"M j, Y" }}</td>
+        <td class="btn-row">
+          <a class="btn btn--sm" href="{% url 'update-customer' c.pk %}">Edit</a>
+          <a class="btn btn--sm btn--danger" href="{% url 'delete-customer' c.pk %}">Delete</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% include 'partials/_pagination.html' %}
+{% else %}
+<div class="card"><div class="empty"><div class="empty__icon">👥</div><p>No customers found.</p></div></div>
+{% endif %}
+{% endblock %}

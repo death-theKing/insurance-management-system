@@ -1,0 +1,52 @@
+{% extends 'insurance/_base.html' %}
+{% load humanize %}
+{% block page_title %}Policies{% endblock %}
+{% block content %}
+<div class="card__header"><h1 class="mb-0">Policies</h1>
+  <a class="btn btn--primary" href="{% url 'admin-add-policy' %}">Add policy</a></div>
+
+<div class="card">
+  <form method="get" class="form-inline">
+    <div class="field"><label>Search</label><input type="search" name="q" value="{{ q }}" placeholder="Policy name"></div>
+    <div class="field"><label>Category</label>
+      <select name="category">
+        <option value="">All</option>
+        {% for c in categories %}<option value="{{ c.id }}" {% if selected_category == c.id|stringformat:'s' %}selected{% endif %}>{{ c.category_name }}</option>{% endfor %}
+      </select>
+    </div>
+    <button class="btn btn--primary" type="submit">Filter</button>
+    {% if q or selected_category %}<a class="btn btn--ghost" href="{% url 'admin-view-policy' %}">Reset</a>{% endif %}
+  </form>
+</div>
+
+{% if page_obj.object_list %}
+<div class="table-wrap">
+  <table class="data">
+    <thead><tr><th>Name</th><th>Category</th><th>Sum assured</th><th>Premium</th><th>Tenure</th><th>Active</th><th>Applicants</th><th></th></tr></thead>
+    <tbody>
+      {% for p in page_obj %}
+      <tr>
+        <td>{{ p.policy_name }}</td>
+        <td>{{ p.category.category_name }}</td>
+        <td>{{ p.sum_assurance|intcomma }}</td>
+        <td>{{ p.premium|intcomma }}</td>
+        <td>{{ p.tenure }} yr</td>
+        <td>{% if p.is_active %}<span class="badge badge--approved">Yes</span>{% else %}<span class="badge badge--rejected">No</span>{% endif %}</td>
+        <td>{{ p.applicant_count }}</td>
+        <td class="btn-row">
+          <a class="btn btn--sm" href="{% url 'update-policy' p.pk %}">Edit</a>
+          <form method="post" action="{% url 'delete-policy' p.pk %}"
+                data-confirm="Delete policy '{{ p.policy_name }}'? Related applications and claims will also be deleted.">
+            {% csrf_token %}<button class="btn btn--sm btn--danger" type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% include 'partials/_pagination.html' %}
+{% else %}
+<div class="card"><div class="empty"><div class="empty__icon">📦</div><p>No policies match.</p></div></div>
+{% endif %}
+{% endblock %}

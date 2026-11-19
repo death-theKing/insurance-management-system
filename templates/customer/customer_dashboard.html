@@ -1,0 +1,49 @@
+{% extends 'customer/_base.html' %}
+{% load app_extras %}
+{% block page_title %}Dashboard{% endblock %}
+{% block content %}
+<h1>Welcome, {{ customer.get_name }}</h1>
+
+<div class="stat-grid">
+  <div class="stat"><div class="stat__label">Available policies</div><div class="stat__value"><a href="{% url 'policy-list' %}">{{ available_policy }}</a></div></div>
+  <div class="stat"><div class="stat__label">My applications</div><div class="stat__value"><a href="{% url 'history' %}">{{ applied_policy }}</a></div></div>
+  <div class="stat"><div class="stat__label">Approved</div><div class="stat__value">{{ approved_policy }}</div></div>
+  <div class="stat"><div class="stat__label">Pending</div><div class="stat__value">{{ pending_policy }}</div></div>
+  <div class="stat"><div class="stat__label">Claims</div><div class="stat__value"><a href="{% url 'claim-list' %}">{{ total_claims }}</a></div></div>
+  <div class="stat"><div class="stat__label">Questions</div><div class="stat__value"><a href="{% url 'question-history' %}">{{ total_question }}</a></div></div>
+</div>
+
+{% if renewals_due %}
+<div class="card" style="border-color:var(--warning)">
+  <div class="card__title">Renewals needing attention</div>
+  <ul class="mb-0">
+    {% for r in renewals_due %}
+      <li>{{ r.policy.policy_name }} &mdash; <span class="badge {{ r.renewal_status|badge_class }}">{{ r.renewal_status.label }}</span>
+        <a href="{% url 'renewals' %}">manage</a></li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+<div class="card">
+  <div class="card__header"><span class="card__title">Recent applications</span><a class="btn btn--sm" href="{% url 'history' %}">View all</a></div>
+  {% if recent_records %}
+  <div class="table-wrap">
+    <table class="data">
+      <thead><tr><th>Policy</th><th>Applied</th><th>Status</th></tr></thead>
+      <tbody>
+        {% for r in recent_records %}
+        <tr>
+          <td><a href="{% url 'application-detail' r.pk %}">{{ r.policy.policy_name }}</a></td>
+          <td>{{ r.created_at|date:"M j, Y" }}</td>
+          <td><span class="badge {{ r.status|badge_class }}">{{ r.status }}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty"><div class="empty__icon">📄</div><p>No applications yet. <a href="{% url 'policy-list' %}">Browse policies</a>.</p></div>
+  {% endif %}
+</div>
+{% endblock %}

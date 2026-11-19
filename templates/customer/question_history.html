@@ -1,0 +1,22 @@
+{% extends 'customer/_base.html' %}
+{% block page_title %}My questions{% endblock %}
+{% block content %}
+<div class="card__header"><h1 class="mb-0">My questions</h1><a class="btn btn--primary" href="{% url 'ask-question' %}">Ask a question</a></div>
+
+{% if page_obj.object_list %}
+  {% for q in page_obj %}
+  <div class="card">
+    <div class="card__header">
+      <span class="text-muted">{{ q.created_at|date:"M j, Y" }}</span>
+      <span class="badge {% if q.is_answered %}badge--approved{% else %}badge--pending{% endif %}">
+        {% if q.is_answered %}Answered{% else %}Awaiting reply{% endif %}</span>
+    </div>
+    <p><strong>Q:</strong> {{ q.description }}</p>
+    {% if q.admin_comment %}<p class="mb-0"><strong>A:</strong> {{ q.admin_comment }}</p>{% endif %}
+  </div>
+  {% endfor %}
+  {% include 'partials/_pagination.html' %}
+{% else %}
+<div class="card"><div class="empty"><div class="empty__icon">💬</div><p>You have not asked any questions yet.</p></div></div>
+{% endif %}
+{% endblock %}

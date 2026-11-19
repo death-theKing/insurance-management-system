@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Customer &middot; InsuranceMS{% endblock %}
+{% block content %}
+<section class="hero">
+  <h1>Welcome, customer</h1>
+  <p>Create an account or log in to browse policies and manage your cover.</p>
+  <div class="btn-row" style="justify-content:center;margin-top:1rem">
+    <a class="btn btn--primary" href="{% url 'customersignup' %}">Create your account</a>
+    <a class="btn" href="{% url 'customerlogin' %}">Log in</a>
+  </div>
+</section>
+{% endblock %}

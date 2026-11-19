@@ -1,0 +1,43 @@
+{% extends 'customer/_base.html' %}
+{% load app_extras %}
+{% block page_title %}My applications{% endblock %}
+{% block content %}
+<h1>My applications</h1>
+
+<div class="card">
+  <form method="get" class="form-inline">
+    <div class="field"><label>Status</label>
+      <select name="status" onchange="this.form.submit()">
+        <option value="">All</option>
+        {% for value, label in statuses %}
+          <option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <noscript><button class="btn" type="submit">Filter</button></noscript>
+  </form>
+</div>
+
+{% if page_obj.object_list %}
+<div class="table-wrap">
+  <table class="data">
+    <thead><tr><th>Policy</th><th>Category</th><th>Applied</th><th>Status</th><th>Cover period</th><th></th></tr></thead>
+    <tbody>
+      {% for r in page_obj %}
+      <tr>
+        <td>{{ r.policy.policy_name }}</td>
+        <td>{{ r.policy.category.category_name }}</td>
+        <td>{{ r.created_at|date:"M j, Y" }}</td>
+        <td><span class="badge {{ r.status|badge_class }}">{{ r.status }}</span></td>
+        <td>{% if r.start_date %}{{ r.start_date }} &ndash; {{ r.end_date }}{% else %}&mdash;{% endif %}</td>
+        <td><a class="btn btn--sm" href="{% url 'application-detail' r.pk %}">View</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% include 'partials/_pagination.html' %}
+{% else %}
+<div class="card"><div class="empty"><div class="empty__icon">📄</div><p>No applications yet. <a href="{% url 'policy-list' %}">Browse policies</a>.</p></div></div>
+{% endif %}
+{% endblock %}

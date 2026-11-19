@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Create account &middot; InsuranceMS{% endblock %}
+{% block content %}
+<h1>Create a customer account</h1>
+<div class="card" style="max-width:640px">
+  <form method="post" enctype="multipart/form-data" class="form" autocomplete="off">
+    {% csrf_token %}
+    <h3>Login details</h3>
+    {% include 'partials/_form.html' with form=userForm %}
+    <h3 style="margin-top:1rem">Contact details</h3>
+    {% include 'partials/_form.html' with form=customerForm %}
+    <button class="btn btn--primary" type="submit">Sign up</button>
+  </form>
+</div>
+<p class="text-muted">Already registered? <a href="{% url 'customerlogin' %}">Log in</a>.</p>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{% block page_title %}Dashboard{% endblock %} &middot; InsuranceMS{% endblock %}</title>
+  <link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to content</a>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar__brand">Insurance<span>MS</span></div>
+    <nav class="sidebar__nav" aria-label="Primary">
+      {% block sidebar_nav %}{% endblock %}
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:.75rem">
+        <button class="menu-toggle" type="button" data-menu-toggle aria-label="Toggle navigation menu">&#9776;</button>
+        <span class="topbar__title" data-page-title></span>
+      </div>
+      <div class="topbar__right">
+        <a href="{% url 'notifications' %}" aria-label="Notifications" title="Notifications">
+          <span aria-hidden="true">&#128276;</span>{% if unread_notification_count %} <span class="badge badge--danger">{{ unread_notification_count }}</span>{% endif %}
+        </a>
+        <span class="text-muted">{{ user.get_full_name|default:user.username }}</span>
+        <form action="{% url 'logout' %}" method="post" style="display:inline">{% csrf_token %}
+          <button class="btn btn--sm" type="submit">Log out</button>
+        </form>
+      </div>
+    </header>
+
+    <main class="content" id="main-content">
+      {% include 'partials/_messages.html' %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</div>
+{% include 'partials/_confirm_modal.html' %}
+<script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>
